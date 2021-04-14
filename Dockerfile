@@ -1,4 +1,4 @@
-FROM arm64v8/ubuntu:focal
+FROM ubuntu:focal
 LABEL MAINTAINER="Shopblocks <support@shopblocks.com>"
 
 ENV DEBIAN_FRONTEND noninteractive
