@@ -1,5 +1,5 @@
 FROM ubuntu:focal
-LABEL MAINTAINER="John Rofrano <rofrano@gmail.com>"
+LABEL MAINTAINER="Shopblocks <support@shopblocks.com>"
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -30,6 +30,8 @@ RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == system
 RUN systemctl enable ssh.service; 
 EXPOSE 22
 
+RUN echo 'root:root' | chpasswd
+
 # Create the vagrant user
 RUN useradd -m -G sudo -s /bin/bash vagrant && \
     echo "vagrant:vagrant" | chpasswd && \
@@ -43,6 +45,9 @@ ADD https://raw.githubusercontent.com/hashicorp/vagrant/master/keys/vagrant.pub 
 RUN chmod 600 /home/vagrant/.ssh/authorized_keys; \
     chown -R vagrant:vagrant /home/vagrant/.ssh
 
-# Run the init daemon
-VOLUME [ "/sys/fs/cgroup" ]
-CMD ["/usr/sbin/init"]
+RUN mkdir /var/run/sshd
+RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+
+EXPOSE 22 8080
+CMD ["/usr/sbin/sshd", "-D"]
+
