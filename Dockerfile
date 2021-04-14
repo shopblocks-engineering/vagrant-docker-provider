@@ -12,6 +12,7 @@ RUN apt-get update && \
         sudo \
         man-db \
         curl \
+	locales \
         vim-tiny && \
     apt-get -qq clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -28,7 +29,6 @@ RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == system
 
 # Enable ssh for vagrant
 RUN systemctl enable ssh.service; 
-EXPOSE 22
 
 RUN echo 'root:root' | chpasswd
 
